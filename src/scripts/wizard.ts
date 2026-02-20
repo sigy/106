@@ -2,7 +2,9 @@ const TOTAL_STEPS = 5;
 let currentStep = 1;
 
 function getEl<T extends HTMLElement>(id: string): T {
-  return document.getElementById(id) as T;
+  const el = document.getElementById(id);
+  if (!el) throw new Error(`Element #${id} not found`);
+  return el as T;
 }
 
 function updateProgress() {
@@ -32,7 +34,6 @@ function showStep(step: number) {
     target.setAttribute('aria-hidden', 'false');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Focus the step heading for screen readers
     const heading = target.querySelector<HTMLElement>('.step__title');
     if (heading) {
       heading.setAttribute('tabindex', '-1');
@@ -42,7 +43,6 @@ function showStep(step: number) {
   currentStep = step;
   updateProgress();
 
-  // Announce step change to screen readers
   const announcer = document.getElementById('srAnnouncer');
   if (announcer) {
     announcer.textContent = `Krok ${step} z ${TOTAL_STEPS}`;
@@ -58,7 +58,6 @@ function validateStep(step: number): boolean {
   const stepEl = document.getElementById(`step-${step}`);
   if (!stepEl) return true;
 
-  // Determine which fields container is visible in step 2
   let fields: NodeListOf<HTMLElement>;
   if (step === 2) {
     const isFyzicka = document.querySelector('.type-option.selected')?.getAttribute('data-type') === 'fyzicka';
@@ -66,14 +65,11 @@ function validateStep(step: number): boolean {
     const delivery = document.querySelector('.delivery-option.selected')?.getAttribute('data-delivery') ?? 'email';
     const deliveryFieldId = `field-${delivery}`;
 
-    // Validate person fields
     const personFields = document.getElementById(activeFieldsId)?.querySelectorAll<HTMLElement>('[data-validate]') ?? [];
-    // Validate visible delivery field
     const deliveryField = document.getElementById(deliveryFieldId)?.closest<HTMLElement>('[data-validate]');
 
     fields = personFields as NodeListOf<HTMLElement>;
 
-    // Also validate delivery
     let allValid = validateFields(fields);
     if (deliveryField) {
       if (!validateField(deliveryField)) allValid = false;
@@ -104,7 +100,6 @@ function validateField(field: HTMLElement): boolean {
     valid = input.value.trim().length > 0;
   } else if (rule === 'email') {
     valid = input.value.trim().length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
-    // Email for delivery is required when visible
     if (field.style.display !== 'none' && field.offsetParent !== null) {
       valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
     }
@@ -112,7 +107,6 @@ function validateField(field: HTMLElement): boolean {
 
   field.classList.toggle('has-error', !valid);
 
-  // Clear error on input
   if (!valid) {
     input.addEventListener('input', function handler() {
       field.classList.remove('has-error');
@@ -140,11 +134,15 @@ document.querySelectorAll('[data-prev]').forEach((btn) => {
   });
 });
 
-// Type selector (fyzická / právnická osoba)
+// Type selector with ARIA
 document.querySelectorAll('.type-option').forEach((btn) => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.type-option').forEach((b) => b.classList.remove('selected'));
+    document.querySelectorAll('.type-option').forEach((b) => {
+      b.classList.remove('selected');
+      b.setAttribute('aria-checked', 'false');
+    });
     btn.classList.add('selected');
+    btn.setAttribute('aria-checked', 'true');
 
     const type = (btn as HTMLElement).dataset.type;
     const fyzickaFields = getEl<HTMLDivElement>('fields-fyzicka');
@@ -160,11 +158,15 @@ document.querySelectorAll('.type-option').forEach((btn) => {
   });
 });
 
-// Delivery option selector
+// Delivery option selector with ARIA
 document.querySelectorAll('.delivery-option').forEach((btn) => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.delivery-option').forEach((b) => b.classList.remove('selected'));
+    document.querySelectorAll('.delivery-option').forEach((b) => {
+      b.classList.remove('selected');
+      b.setAttribute('aria-checked', 'false');
+    });
     btn.classList.add('selected');
+    btn.setAttribute('aria-checked', 'true');
 
     const delivery = (btn as HTMLElement).dataset.delivery;
     getEl<HTMLDivElement>('field-email').style.display = delivery === 'email' ? '' : 'none';
@@ -173,14 +175,40 @@ document.querySelectorAll('.delivery-option').forEach((btn) => {
   });
 });
 
-// Collect form data
-function getFormData() {
+// Form data types
+interface FyzickaFormData {
+  type: 'fyzicka';
+  name: string;
+  dob: string;
+  address: string;
+  delivery: string;
+  deliveryDetail: string;
+  authority: string;
+  authorityAddress: string;
+  requestText: string;
+}
+
+interface PravnickaFormData {
+  type: 'pravnicka';
+  name: string;
+  ico: string;
+  address: string;
+  delivery: string;
+  deliveryDetail: string;
+  authority: string;
+  authorityAddress: string;
+  requestText: string;
+}
+
+type FormData = FyzickaFormData | PravnickaFormData;
+
+function getFormData(): FormData {
   const isFyzicka = document.querySelector('.type-option.selected')?.getAttribute('data-type') === 'fyzicka';
   const delivery = document.querySelector('.delivery-option.selected')?.getAttribute('data-delivery') ?? 'email';
 
   if (isFyzicka) {
     return {
-      type: 'fyzicka' as const,
+      type: 'fyzicka',
       name: `${getEl<HTMLInputElement>('fname').value} ${getEl<HTMLInputElement>('lname').value}`,
       dob: getEl<HTMLInputElement>('dob').value,
       address: getEl<HTMLInputElement>('address').value,
@@ -193,7 +221,7 @@ function getFormData() {
   }
 
   return {
-    type: 'pravnicka' as const,
+    type: 'pravnicka',
     name: getEl<HTMLInputElement>('orgname').value,
     ico: getEl<HTMLInputElement>('ico').value,
     address: getEl<HTMLInputElement>('orgaddress').value,
@@ -232,13 +260,31 @@ function formatDate(): string {
   return `${now.getDate()}. ${months[now.getMonth()]} ${now.getFullYear()}`;
 }
 
+function extractCity(address: string): string {
+  const parts = address.split(',').map((s) => s.trim());
+  if (parts.length >= 2) {
+    const last = parts[parts.length - 1];
+    return last.replace(/^\d{3}\s?\d{2}\s*/, '').trim() || 'Praze';
+  }
+  return 'Praze';
+}
+
+function getDateLine(): string {
+  const data = getFormData();
+  const city = extractCity(data.address);
+  return `V ${city} dne ${formatDate()}`;
+}
+
 function generateRequestText(): string {
   const data = getFormData();
   const deliveryLine = data.deliveryDetail ? `\n\n${getDeliveryText(data.delivery, data.deliveryDetail)}` : '';
 
-  const senderBlock = data.type === 'fyzicka'
-    ? `${data.name}\nnar. ${(data as any).dob}\n${data.address}`
-    : `${data.name}\nIČO: ${(data as any).ico}\n${data.address}`;
+  let senderBlock: string;
+  if (data.type === 'fyzicka') {
+    senderBlock = `${data.name}\nnar. ${data.dob}\n${data.address}`;
+  } else {
+    senderBlock = `${data.name}\nIČO: ${data.ico}\n${data.address}`;
+  }
 
   return `${data.authority}${data.authorityAddress ? '\n' + data.authorityAddress : ''}
 
@@ -256,7 +302,7 @@ function renderPreview() {
   const body = getEl<HTMLDivElement>('previewBody');
   const date = getEl<HTMLDivElement>('previewDate');
   body.textContent = generateRequestText();
-  date.textContent = `V Praze dne ${formatDate()}`;
+  date.textContent = getDateLine();
 }
 
 // Copy text
@@ -274,16 +320,23 @@ getEl<HTMLButtonElement>('copyTextBtn').addEventListener('click', async () => {
 
 // Send via email (mailto)
 getEl<HTMLButtonElement>('sendEmailBtn').addEventListener('click', () => {
-  const data = getFormData();
   const body = generateRequestText();
-  const subject = encodeURIComponent(`Žádost o informace dle zákona č. 106/1999 Sb.`);
-  const encodedBody = encodeURIComponent(body + `\n\nV Praze dne ${formatDate()}`);
+  const subject = encodeURIComponent('Žádost o informace dle zákona č. 106/1999 Sb.');
+  const encodedBody = encodeURIComponent(body + `\n\n${getDateLine()}`);
   window.location.href = `mailto:?subject=${subject}&body=${encodedBody}`;
 });
 
 // Expose for PDF generator and AI assist
-(window as any).__wizard = {
+interface WizardAPI {
+  generateRequestText: () => string;
+  getFormData: () => FormData;
+  formatDate: () => string;
+  getDateLine: () => string;
+}
+
+(window as unknown as { __wizard: WizardAPI }).__wizard = {
   generateRequestText,
   getFormData,
   formatDate,
+  getDateLine,
 };

@@ -1,12 +1,11 @@
 import { jsPDF } from 'jspdf';
 
 document.getElementById('downloadPdfBtn')?.addEventListener('click', () => {
-  const wizard = (window as any).__wizard;
+  const wizard = (window as unknown as { __wizard?: { getFormData: () => any; generateRequestText: () => string; formatDate: () => string; getDateLine: () => string } }).__wizard;
   if (!wizard) return;
 
   const data = wizard.getFormData();
-  const requestText = wizard.generateRequestText();
-  const date = wizard.formatDate();
+  const dateLine = wizard.getDateLine();
 
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -53,7 +52,7 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', () => {
     const deliveryLabels: Record<string, string> = {
       email: 'E-mail',
       post: 'Korespondenční adresa',
-      datovka: 'Datová schranka',
+      datovka: 'Datová schránka',
     };
     doc.text(`${deliveryLabels[data.delivery] ?? ''}: ${data.deliveryDetail}`, marginLeft, y);
     y += 4;
@@ -85,7 +84,7 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', () => {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text(`V Praze dne ${date}`, pageWidth - marginRight, y, { align: 'right' });
+  doc.text(dateLine, pageWidth - marginRight, y, { align: 'right' });
   y += 10;
 
   // --- Title ---
@@ -97,7 +96,7 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', () => {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.setTextColor(100, 100, 100);
-  doc.text('dle zákona c. 106/1999 Sb., o svobodném prístupu k informacím', marginLeft, y);
+  doc.text('dle zákona č. 106/1999 Sb., o svobodném přístupu k informacím', marginLeft, y);
   y += 3;
 
   // Divider line
@@ -114,7 +113,7 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', () => {
   y += 8;
 
   // --- Legal basis ---
-  const legalText = 've smyslu zákona c. 106/1999 Sb., o svobodném prístupu k informacím, žádám o poskytnutí následujících informací:';
+  const legalText = 've smyslu zákona č. 106/1999 Sb., o svobodném přístupu k informacím, žádám o poskytnutí následujících informací:';
   const legalLines = doc.splitTextToSize(legalText, contentWidth);
   for (const line of legalLines) {
     checkPage(6);

@@ -11,11 +11,8 @@ async function callAiAssist(action: string, text: string): Promise<AiResponse> {
       body: JSON.stringify({ action, text }),
     });
 
-    if (!response.ok) {
-      return { result: '', success: false };
-    }
-
-    return await response.json() as AiResponse;
+    const data = await response.json() as AiResponse;
+    return data;
   } catch {
     return { result: '', success: false };
   }
@@ -31,19 +28,30 @@ function setLoading(btn: HTMLButtonElement, loading: boolean) {
   }
 }
 
-function showFeedback(
-  feedbackEl: HTMLElement,
-  titleEl: HTMLElement,
-  descEl: HTMLElement,
-  title: string,
-  desc: string,
-  type: 'success' | 'error',
-) {
-  feedbackEl.classList.remove('success', 'error');
-  feedbackEl.classList.add('visible', type);
-  titleEl.textContent = title;
-  descEl.textContent = desc;
+interface FeedbackGroup {
+  el: HTMLElement;
+  title: HTMLElement;
+  desc: HTMLElement;
 }
+
+function getFeedback(prefix: string): FeedbackGroup | null {
+  const el = document.getElementById(`${prefix}Feedback`);
+  const title = document.getElementById(`${prefix}FeedbackTitle`);
+  const desc = document.getElementById(`${prefix}FeedbackDesc`);
+  if (!el || !title || !desc) return null;
+  return { el, title, desc };
+}
+
+function showFeedback(fb: FeedbackGroup, title: string, desc: string, type: 'success' | 'error') {
+  fb.el.classList.remove('success', 'error');
+  fb.el.classList.add('visible', type);
+  fb.title.textContent = title;
+  fb.desc.textContent = desc;
+}
+
+// Resolve feedback groups once
+const suggestFb = getFeedback('suggest');
+const relevanceFb = getFeedback('relevance');
 
 // Character counter
 const requestTextarea = document.getElementById('requestText') as HTMLTextAreaElement | null;
@@ -58,7 +66,7 @@ function updateCharCounter() {
 requestTextarea?.addEventListener('input', updateCharCounter);
 updateCharCounter();
 
-// Undo AI text - stores original before AI modifies it
+// Undo AI text
 let originalRequestText: string | null = null;
 const undoAiBtn = document.getElementById('undoAiBtn') as HTMLButtonElement | null;
 
@@ -71,7 +79,7 @@ undoAiBtn?.addEventListener('click', () => {
   }
 });
 
-// Fallback tips when AI is not available
+// Fallback tips
 const FALLBACK_TIPS = {
   'suggest-authority': 'Pro dotazy o obci se obraťte na obecní/městský úřad. Pro ministerstva na příslušné ministerstvo podle tématu. Pro kraje na krajský úřad.',
   'check-relevance': 'Zákon 106 pokrývá informace o činnosti povinných subjektů. Nepokrývá osobní údaje třetích osob, obchodní tajemství ani utajované informace.',
@@ -82,12 +90,10 @@ const FALLBACK_TIPS = {
 document.getElementById('suggestAuthorityBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('suggestAuthorityBtn') as HTMLButtonElement;
   const topic = (document.getElementById('aiTopicInput') as HTMLTextAreaElement).value;
-  const feedbackEl = document.getElementById('suggestFeedback')!;
-  const titleEl = document.getElementById('suggestFeedbackTitle')!;
-  const descEl = document.getElementById('suggestFeedbackDesc')!;
+  if (!suggestFb) return;
 
   if (!topic.trim()) {
-    showFeedback(feedbackEl, titleEl, descEl, 'Zadejte téma', 'Popište, o jaké informace máte zájem, a my vám navrhneme správný úřad.', 'error');
+    showFeedback(suggestFb, 'Zadejte téma', 'Popište, o jaké informace máte zájem, a my vám navrhneme správný úřad.', 'error');
     return;
   }
 
@@ -96,9 +102,9 @@ document.getElementById('suggestAuthorityBtn')?.addEventListener('click', async 
   setLoading(btn, false);
 
   if (response.success && response.result) {
-    showFeedback(feedbackEl, titleEl, descEl, 'Doporučený úřad', response.result, 'success');
+    showFeedback(suggestFb, 'Doporučený úřad', response.result, 'success');
   } else {
-    showFeedback(feedbackEl, titleEl, descEl, 'AI nápověda není dostupná', FALLBACK_TIPS['suggest-authority'], 'error');
+    showFeedback(suggestFb, 'AI nápověda není dostupná', FALLBACK_TIPS['suggest-authority'], 'error');
   }
 });
 
@@ -106,12 +112,10 @@ document.getElementById('suggestAuthorityBtn')?.addEventListener('click', async 
 document.getElementById('checkRelevanceBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('checkRelevanceBtn') as HTMLButtonElement;
   const text = (document.getElementById('requestText') as HTMLTextAreaElement).value;
-  const feedbackEl = document.getElementById('relevanceFeedback')!;
-  const titleEl = document.getElementById('relevanceFeedbackTitle')!;
-  const descEl = document.getElementById('relevanceFeedbackDesc')!;
+  if (!relevanceFb) return;
 
   if (!text.trim()) {
-    showFeedback(feedbackEl, titleEl, descEl, 'Zadejte text žádosti', 'Nejprve napište, jaké informace požadujete.', 'error');
+    showFeedback(relevanceFb, 'Zadejte text žádosti', 'Nejprve napište, jaké informace požadujete.', 'error');
     return;
   }
 
@@ -122,13 +126,13 @@ document.getElementById('checkRelevanceBtn')?.addEventListener('click', async ()
   if (response.success && response.result) {
     const isRelevant = response.result.toLowerCase().includes('relevantní') || response.result.toLowerCase().includes('spadá');
     showFeedback(
-      feedbackEl, titleEl, descEl,
+      relevanceFb,
       isRelevant ? 'Žádost je relevantní' : 'Upozornění',
       response.result,
       isRelevant ? 'success' : 'error',
     );
   } else {
-    showFeedback(feedbackEl, titleEl, descEl, 'AI kontrola není dostupná', FALLBACK_TIPS['check-relevance'], 'error');
+    showFeedback(relevanceFb, 'AI kontrola není dostupná', FALLBACK_TIPS['check-relevance'], 'error');
   }
 });
 
@@ -137,12 +141,10 @@ document.getElementById('improveWordingBtn')?.addEventListener('click', async ()
   const btn = document.getElementById('improveWordingBtn') as HTMLButtonElement;
   const textarea = document.getElementById('requestText') as HTMLTextAreaElement;
   const text = textarea.value;
+  if (!relevanceFb) return;
 
   if (!text.trim()) {
-    const feedbackEl = document.getElementById('relevanceFeedback')!;
-    const titleEl = document.getElementById('relevanceFeedbackTitle')!;
-    const descEl = document.getElementById('relevanceFeedbackDesc')!;
-    showFeedback(feedbackEl, titleEl, descEl, 'Zadejte text žádosti', 'Nejprve napište, jaké informace požadujete.', 'error');
+    showFeedback(relevanceFb, 'Zadejte text žádosti', 'Nejprve napište, jaké informace požadujete.', 'error');
     return;
   }
 
@@ -155,14 +157,8 @@ document.getElementById('improveWordingBtn')?.addEventListener('click', async ()
     textarea.value = response.result;
     if (undoAiBtn) undoAiBtn.style.display = '';
     updateCharCounter();
-    const feedbackEl = document.getElementById('relevanceFeedback')!;
-    const titleEl = document.getElementById('relevanceFeedbackTitle')!;
-    const descEl = document.getElementById('relevanceFeedbackDesc')!;
-    showFeedback(feedbackEl, titleEl, descEl, 'Formulace vylepšena', 'Text žádosti byl přeformulován pro lepší srozumitelnost a úřední korektnost.', 'success');
+    showFeedback(relevanceFb, 'Formulace vylepšena', 'Text žádosti byl přeformulován pro lepší srozumitelnost a úřední korektnost.', 'success');
   } else {
-    const feedbackEl = document.getElementById('relevanceFeedback')!;
-    const titleEl = document.getElementById('relevanceFeedbackTitle')!;
-    const descEl = document.getElementById('relevanceFeedbackDesc')!;
-    showFeedback(feedbackEl, titleEl, descEl, 'AI vylepšení není dostupné', FALLBACK_TIPS['improve-wording'], 'error');
+    showFeedback(relevanceFb, 'AI vylepšení není dostupné', FALLBACK_TIPS['improve-wording'], 'error');
   }
 });
