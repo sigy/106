@@ -261,7 +261,14 @@ import Layout from '../layouts/Layout.astro';
         <div class="form-field" data-validate="required">
           <label for="requestText">Popis požadovaných informací</label>
           <textarea id="requestText" name="requestText" placeholder="Např. Žádám o poskytnutí informace o celkových nákladech na rekonstrukci budovy obecního úřadu v roce 2024, včetně rozpisu jednotlivých položek." required></textarea>
-          <span class="form-field__error">Popište, jaké informace požadujete</span>
+          <div class="textarea-meta">
+            <span class="form-field__error">Popište, jaké informace požadujete</span>
+            <span class="char-counter" id="charCounter">0 znaků</span>
+          </div>
+          <button class="undo-btn" id="undoAiBtn" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Vrátit původní text
+          </button>
         </div>
       </div>
 
@@ -320,6 +327,10 @@ import Layout from '../layouts/Layout.astro';
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Stáhnout PDF
         </button>
+        <button class="btn btn--secondary" id="sendEmailBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          Odeslat e-mailem
+        </button>
       </div>
 
       <div class="draft-actions">
@@ -373,6 +384,36 @@ import Layout from '../layouts/Layout.astro';
 
   <!-- Draft status toast -->
   <div class="draft-status" id="draftStatus"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <div class="site-footer__section">
+        <h3 class="site-footer__heading">Zákon č. 106/1999 Sb.</h3>
+        <ul class="site-footer__links">
+          <li><a href="https://www.zakonyprolidi.cz/cs/1999-106" target="_blank" rel="noopener noreferrer">Plné znění zákona</a></li>
+          <li><a href="https://www.ochrance.cz/" target="_blank" rel="noopener noreferrer">Veřejný ochránce práv (ombudsman)</a></li>
+          <li><a href="https://www.mvcr.cz/" target="_blank" rel="noopener noreferrer">Ministerstvo vnitra ČR</a></li>
+        </ul>
+      </div>
+      <div class="site-footer__section">
+        <h3 class="site-footer__heading">Důležité lhůty</h3>
+        <ul class="site-footer__list">
+          <li><strong>15 dnů</strong> — lhůta pro odpověď úřadu</li>
+          <li><strong>+10 dnů</strong> — maximální prodloužení lhůty</li>
+          <li><strong>15 dnů</strong> — lhůta pro odvolání proti odmítnutí</li>
+          <li><strong>30 dnů</strong> — lhůta pro stížnost na nečinnost</li>
+        </ul>
+      </div>
+      <div class="site-footer__section">
+        <h3 class="site-footer__heading">Odvolání</h3>
+        <p class="site-footer__text">Pokud úřad žádost odmítne, máte právo podat odvolání k nadřízenému orgánu do 15 dnů od doručení rozhodnutí. Pokud úřad nereaguje vůbec, můžete podat stížnost na nečinnost do 30 dnů po uplynutí lhůty.</p>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <span>Žádost 106 — nekomerční projekt pro snadné uplatnění práva na informace</span>
+    </div>
+  </footer>
 
   <!-- Template picker modal -->
   <div class="template-overlay" id="templateOverlay"></div>

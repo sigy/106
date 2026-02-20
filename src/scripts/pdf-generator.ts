@@ -184,4 +184,14 @@ document.getElementById('downloadPdfBtn')?.addEventListener('click', () => {
   }
 
   doc.save('zadost-106.pdf');
+
+  // Show success animation
+  const toast = document.getElementById('draftStatus');
+  if (toast) {
+    toast.textContent = 'PDF úspěšně staženo';
+    toast.classList.add('visible', 'success-toast');
+    setTimeout(() => {
+      toast.classList.remove('visible', 'success-toast');
+    }, 3000);
+  }
 });

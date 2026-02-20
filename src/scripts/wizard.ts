@@ -272,6 +272,15 @@ getEl<HTMLButtonElement>('copyTextBtn').addEventListener('click', async () => {
   }
 });
 
+// Send via email (mailto)
+getEl<HTMLButtonElement>('sendEmailBtn').addEventListener('click', () => {
+  const data = getFormData();
+  const body = generateRequestText();
+  const subject = encodeURIComponent(`Žádost o informace dle zákona č. 106/1999 Sb.`);
+  const encodedBody = encodeURIComponent(body + `\n\nV Praze dne ${formatDate()}`);
+  window.location.href = `mailto:?subject=${subject}&body=${encodedBody}`;
+});
+
 // Expose for PDF generator and AI assist
 (window as any).__wizard = {
   generateRequestText,

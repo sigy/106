@@ -45,6 +45,32 @@ function showFeedback(
   descEl.textContent = desc;
 }
 
+// Character counter
+const requestTextarea = document.getElementById('requestText') as HTMLTextAreaElement | null;
+const charCounter = document.getElementById('charCounter');
+
+function updateCharCounter() {
+  if (!requestTextarea || !charCounter) return;
+  const len = requestTextarea.value.length;
+  charCounter.textContent = `${len} ${len === 1 ? 'znak' : len >= 2 && len <= 4 ? 'znaky' : 'znaků'}`;
+}
+
+requestTextarea?.addEventListener('input', updateCharCounter);
+updateCharCounter();
+
+// Undo AI text - stores original before AI modifies it
+let originalRequestText: string | null = null;
+const undoAiBtn = document.getElementById('undoAiBtn') as HTMLButtonElement | null;
+
+undoAiBtn?.addEventListener('click', () => {
+  if (originalRequestText !== null && requestTextarea) {
+    requestTextarea.value = originalRequestText;
+    originalRequestText = null;
+    undoAiBtn.style.display = 'none';
+    updateCharCounter();
+  }
+});
+
 // Fallback tips when AI is not available
 const FALLBACK_TIPS = {
   'suggest-authority': 'Pro dotazy o obci se obraťte na obecní/městský úřad. Pro ministerstva na příslušné ministerstvo podle tématu. Pro kraje na krajský úřad.',
@@ -125,7 +151,10 @@ document.getElementById('improveWordingBtn')?.addEventListener('click', async ()
   setLoading(btn, false);
 
   if (response.success && response.result) {
+    originalRequestText = text;
     textarea.value = response.result;
+    if (undoAiBtn) undoAiBtn.style.display = '';
+    updateCharCounter();
     const feedbackEl = document.getElementById('relevanceFeedback')!;
     const titleEl = document.getElementById('relevanceFeedbackTitle')!;
     const descEl = document.getElementById('relevanceFeedbackDesc')!;

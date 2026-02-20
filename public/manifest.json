@@ -1,0 +1,17 @@
+{
+  "name": "Žádost 106",
+  "short_name": "Žádost 106",
+  "description": "Vytvořte si žádost o informace podle zákona č. 106/1999 Sb.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#0d6e6e",
+  "lang": "cs",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
