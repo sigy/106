@@ -14,19 +14,39 @@ function updateProgress() {
   const label = getEl<HTMLParagraphElement>('stepLabel');
   label.textContent = `Krok ${currentStep} z ${TOTAL_STEPS}`;
   label.classList.toggle('complete', currentStep === TOTAL_STEPS);
+
+  const progressBar = document.getElementById('progressBar');
+  if (progressBar) {
+    progressBar.setAttribute('aria-valuenow', String(currentStep));
+  }
 }
 
 function showStep(step: number) {
   document.querySelectorAll('.step').forEach((el) => {
     el.classList.remove('active');
+    el.setAttribute('aria-hidden', 'true');
   });
   const target = document.getElementById(`step-${step}`);
   if (target) {
     target.classList.add('active');
+    target.setAttribute('aria-hidden', 'false');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Focus the step heading for screen readers
+    const heading = target.querySelector<HTMLElement>('.step__title');
+    if (heading) {
+      heading.setAttribute('tabindex', '-1');
+      heading.focus({ preventScroll: true });
+    }
   }
   currentStep = step;
   updateProgress();
+
+  // Announce step change to screen readers
+  const announcer = document.getElementById('srAnnouncer');
+  if (announcer) {
+    announcer.textContent = `Krok ${step} z ${TOTAL_STEPS}`;
+  }
 
   if (step === TOTAL_STEPS) {
     renderPreview();

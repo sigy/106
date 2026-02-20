@@ -2,14 +2,23 @@
 import Layout from '../layouts/Layout.astro';
 ---
 <Layout title="Žádost 106 – Vytvořte žádost o informace">
-  <header class="site-header">
+  <header class="site-header" role="banner">
     <a href="/" class="site-header__logo">Žádost 106</a>
-    <span class="site-header__law">Zákon č. 106/1999 Sb.</span>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span class="site-header__law">Zákon č. 106/1999 Sb.</span>
+      <button class="theme-toggle" id="themeToggle" aria-label="Přepnout na tmavý režim">
+        <svg class="theme-toggle__sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="theme-toggle__moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
   </header>
 
-  <main class="wizard-container">
+  <main class="wizard-container" role="main">
+    <!-- Screen reader announcer -->
+    <div id="srAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
     <!-- Progress bar -->
-    <div class="progress-bar" id="progressBar">
+    <div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="5" aria-label="Průběh wizardu">
       <div class="progress-bar__segment active"></div>
       <div class="progress-bar__segment"></div>
       <div class="progress-bar__segment"></div>
@@ -28,7 +37,7 @@ import Layout from '../layouts/Layout.astro';
     </div>
 
     <!-- Step 1: Vaše právo na informace -->
-    <section class="step active" id="step-1">
+    <section class="step active" id="step-1" aria-hidden="false" role="region" aria-label="Krok 1: Vaše právo na informace">
       <h1 class="step__title">Vaše právo na informace</h1>
       <p class="step__subtitle">
         Zákon č. 106/1999 Sb. vám dává právo žádat informace od státních orgánů,
@@ -68,7 +77,7 @@ import Layout from '../layouts/Layout.astro';
     </section>
 
     <!-- Step 2: O vás -->
-    <section class="step" id="step-2">
+    <section class="step" id="step-2" aria-hidden="true" role="region" aria-label="Krok 2: O vás">
       <h1 class="step__title">O vás</h1>
       <p class="step__subtitle">
         Vyplňte základní údaje o sobě. Tyto informace jsou povinnou součástí žádosti.
@@ -175,7 +184,7 @@ import Layout from '../layouts/Layout.astro';
     </section>
 
     <!-- Step 3: Komu píšete -->
-    <section class="step" id="step-3">
+    <section class="step" id="step-3" aria-hidden="true" role="region" aria-label="Krok 3: Komu píšete">
       <h1 class="step__title">Komu píšete?</h1>
       <p class="step__subtitle">
         Vyberte nebo zadejte úřad, instituci nebo orgán, od kterého chcete informace získat.
@@ -235,11 +244,18 @@ import Layout from '../layouts/Layout.astro';
     </section>
 
     <!-- Step 4: Co chcete vědět -->
-    <section class="step" id="step-4">
+    <section class="step" id="step-4" aria-hidden="true" role="region" aria-label="Krok 4: Co chcete vědět">
       <h1 class="step__title">Co chcete vědět?</h1>
       <p class="step__subtitle">
         Popište co nejkonkrétněji, jaké informace požadujete. Čím přesněji, tím lépe.
       </p>
+
+      <div class="ai-actions" style="margin-bottom: -16px;">
+        <button class="ai-btn" id="openTemplatesBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Použít šablonu
+        </button>
+      </div>
 
       <div class="form-fields">
         <div class="form-field" data-validate="required">
@@ -281,7 +297,7 @@ import Layout from '../layouts/Layout.astro';
     </section>
 
     <!-- Step 5: Náhled a stažení -->
-    <section class="step" id="step-5">
+    <section class="step" id="step-5" aria-hidden="true" role="region" aria-label="Krok 5: Náhled a stažení">
       <h1 class="step__title">Vaše žádost je připravena</h1>
       <p class="step__subtitle">
         Zkontrolujte náhled a stáhněte žádost jako text nebo PDF.
@@ -317,6 +333,35 @@ import Layout from '../layouts/Layout.astro';
         </button>
       </div>
 
+      <div class="download-btns">
+        <button class="ai-btn" id="showDeadlinesBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Zobrazit důležité lhůty
+        </button>
+      </div>
+
+      <div class="deadline-card" id="deadlineCard">
+        <div class="deadline-card__header">Důležité lhůty</div>
+        <div class="deadline-items">
+          <div class="deadline-item deadline-item--highlight">
+            <span class="deadline-item__label">Odpověď úřadu (15 pracovních dnů)</span>
+            <span class="deadline-item__date"></span>
+          </div>
+          <div class="deadline-item">
+            <span class="deadline-item__label">Max. prodloužená lhůta (+10 dnů)</span>
+            <span class="deadline-item__date"></span>
+          </div>
+          <div class="deadline-item">
+            <span class="deadline-item__label">Odvolání proti odmítnutí (15 dnů)</span>
+            <span class="deadline-item__date"></span>
+          </div>
+          <div class="deadline-item">
+            <span class="deadline-item__label">Stížnost na nečinnost (30 dnů)</span>
+            <span class="deadline-item__date"></span>
+          </div>
+        </div>
+      </div>
+
       <div class="btn-row" style="justify-content: flex-start;">
         <button class="btn btn--secondary" data-prev>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -329,9 +374,24 @@ import Layout from '../layouts/Layout.astro';
   <!-- Draft status toast -->
   <div class="draft-status" id="draftStatus"></div>
 
+  <!-- Template picker modal -->
+  <div class="template-overlay" id="templateOverlay"></div>
+  <div class="template-picker" id="templatePicker" role="dialog" aria-label="Vyberte šablonu žádosti">
+    <div class="template-picker__header">
+      <span class="template-picker__title">Šablony žádostí</span>
+      <button class="template-picker__close" id="closeTemplatesBtn" aria-label="Zavřít">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="template-picker__list"></div>
+  </div>
+
+  <script src="../scripts/dark-mode.ts"></script>
   <script src="../scripts/wizard.ts"></script>
   <script src="../scripts/ai-assist.ts"></script>
   <script src="../scripts/pdf-generator.ts"></script>
   <script src="../scripts/authorities.ts"></script>
   <script src="../scripts/draft.ts"></script>
+  <script src="../scripts/templates.ts"></script>
+  <script src="../scripts/deadlines.ts"></script>
 </Layout>
