@@ -1,0 +1,337 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Žádost 106 – Vytvořte žádost o informace">
+  <header class="site-header">
+    <a href="/" class="site-header__logo">Žádost 106</a>
+    <span class="site-header__law">Zákon č. 106/1999 Sb.</span>
+  </header>
+
+  <main class="wizard-container">
+    <!-- Progress bar -->
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-bar__segment active"></div>
+      <div class="progress-bar__segment"></div>
+      <div class="progress-bar__segment"></div>
+      <div class="progress-bar__segment"></div>
+      <div class="progress-bar__segment"></div>
+    </div>
+    <p class="step-label" id="stepLabel">Krok 1 z 5</p>
+
+    <!-- Draft restore banner -->
+    <div class="draft-banner" id="draftBanner">
+      <span class="draft-banner__text"></span>
+      <div class="draft-banner__actions">
+        <button class="draft-banner__btn draft-banner__btn--restore" id="draftRestore">Obnovit</button>
+        <button class="draft-banner__btn draft-banner__btn--discard" id="draftDiscard">Zahodit</button>
+      </div>
+    </div>
+
+    <!-- Step 1: Vaše právo na informace -->
+    <section class="step active" id="step-1">
+      <h1 class="step__title">Vaše právo na informace</h1>
+      <p class="step__subtitle">
+        Zákon č. 106/1999 Sb. vám dává právo žádat informace od státních orgánů,
+        samospráv a veřejných institucí. Nemusíte uvádět důvod.
+      </p>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <svg class="info-card__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div>
+            <div class="info-card__title">Kdo musí informace poskytnout?</div>
+            <div class="info-card__desc">Ministerstva, obce, kraje, veřejné instituce (nemocnice, školy), státní podniky a další orgány veřejné moci.</div>
+          </div>
+        </div>
+        <div class="info-card">
+          <svg class="info-card__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div>
+            <div class="info-card__title">Jak rychle dostanete odpověď?</div>
+            <div class="info-card__desc">Úřad musí odpovědět do 15 dnů. Lhůtu může prodloužit maximálně o 10 dnů ze závažných důvodů.</div>
+          </div>
+        </div>
+        <div class="info-card">
+          <svg class="info-card__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div>
+            <div class="info-card__title">Co když vám informace odmítnou?</div>
+            <div class="info-card__desc">Můžete podat odvolání do 15 dnů. Pokud úřad nereaguje, podejte stížnost do 30 dnů. Poslední možností je správní soud.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row" style="justify-content: flex-end;">
+        <button class="btn btn--primary" data-next>
+          Začít vytvářet žádost
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 2: O vás -->
+    <section class="step" id="step-2">
+      <h1 class="step__title">O vás</h1>
+      <p class="step__subtitle">
+        Vyplňte základní údaje o sobě. Tyto informace jsou povinnou součástí žádosti.
+      </p>
+
+      <div class="type-selector">
+        <button class="type-option selected" data-type="fyzicka">
+          <svg class="type-option__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="type-option__label">Fyzická osoba</span>
+        </button>
+        <button class="type-option" data-type="pravnicka">
+          <svg class="type-option__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+          <span class="type-option__label">Právnická osoba</span>
+        </button>
+      </div>
+
+      <!-- Fyzická osoba fields -->
+      <div class="form-fields" id="fields-fyzicka">
+        <div class="form-row">
+          <div class="form-field" data-validate="required">
+            <label for="fname">Jméno</label>
+            <input type="text" id="fname" name="fname" placeholder="Jan" required />
+            <span class="form-field__error">Vyplňte jméno</span>
+          </div>
+          <div class="form-field" data-validate="required">
+            <label for="lname">Příjmení</label>
+            <input type="text" id="lname" name="lname" placeholder="Novák" required />
+            <span class="form-field__error">Vyplňte příjmení</span>
+          </div>
+        </div>
+        <div class="form-field" data-validate="required">
+          <label for="dob">Datum narození</label>
+          <input type="text" id="dob" name="dob" placeholder="1. 1. 1990" required />
+          <span class="form-field__error">Vyplňte datum narození</span>
+        </div>
+        <div class="form-field" data-validate="required">
+          <label for="address">Adresa trvalého bydliště</label>
+          <input type="text" id="address" name="address" placeholder="Václavské náměstí 1, 110 00 Praha 1" required />
+          <span class="form-field__error">Vyplňte adresu bydliště</span>
+        </div>
+      </div>
+
+      <!-- Právnická osoba fields -->
+      <div class="form-fields" id="fields-pravnicka" style="display: none;">
+        <div class="form-field" data-validate="required">
+          <label for="orgname">Název organizace</label>
+          <input type="text" id="orgname" name="orgname" placeholder="Firma s.r.o." />
+          <span class="form-field__error">Vyplňte název organizace</span>
+        </div>
+        <div class="form-field" data-validate="required">
+          <label for="ico">IČO</label>
+          <input type="text" id="ico" name="ico" placeholder="12345678" />
+          <span class="form-field__error">Vyplňte IČO</span>
+        </div>
+        <div class="form-field" data-validate="required">
+          <label for="orgaddress">Sídlo</label>
+          <input type="text" id="orgaddress" name="orgaddress" placeholder="Ulice 1, 110 00 Praha 1" />
+          <span class="form-field__error">Vyplňte adresu sídla</span>
+        </div>
+      </div>
+
+      <span class="section-label">Způsob doručení odpovědi</span>
+      <div class="delivery-options">
+        <button class="delivery-option selected" data-delivery="email">
+          <svg class="delivery-option__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <span class="delivery-option__label">Emailem</span>
+        </button>
+        <button class="delivery-option" data-delivery="post">
+          <svg class="delivery-option__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span class="delivery-option__label">Poštou</span>
+        </button>
+        <button class="delivery-option" data-delivery="datovka">
+          <svg class="delivery-option__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+          <span class="delivery-option__label">Datovou schránkou</span>
+        </button>
+      </div>
+
+      <div class="form-fields" id="delivery-fields">
+        <div class="form-field" id="field-email" data-validate="email">
+          <label for="deliveryEmail">Email pro doručení odpovědi</label>
+          <input type="email" id="deliveryEmail" name="deliveryEmail" placeholder="jan.novak@email.cz" />
+          <span class="form-field__error">Vyplňte platný email</span>
+        </div>
+        <div class="form-field" id="field-post" style="display: none;">
+          <label for="deliveryAddress">Doručovací adresa (pokud se liší od bydliště)</label>
+          <input type="text" id="deliveryAddress" name="deliveryAddress" placeholder="Jiná ulice 5, 120 00 Praha 2" />
+        </div>
+        <div class="form-field" id="field-datovka" style="display: none;">
+          <label for="deliveryDS">ID datové schránky</label>
+          <input type="text" id="deliveryDS" name="deliveryDS" placeholder="abc1234" />
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn--secondary" data-prev>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Zpět
+        </button>
+        <button class="btn btn--primary" data-next>
+          Pokračovat
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 3: Komu píšete -->
+    <section class="step" id="step-3">
+      <h1 class="step__title">Komu píšete?</h1>
+      <p class="step__subtitle">
+        Vyberte nebo zadejte úřad, instituci nebo orgán, od kterého chcete informace získat.
+      </p>
+
+      <div class="form-fields">
+        <div class="form-field autocomplete-wrapper" data-validate="required">
+          <label for="authority">Název povinného subjektu</label>
+          <input type="text" id="authority" name="authority" placeholder="Začněte psát, např. Ministerstvo financí..." autocomplete="off" required />
+          <div class="autocomplete__dropdown" id="authorityDropdown"></div>
+          <span class="form-field__error">Vyplňte název úřadu nebo instituce</span>
+        </div>
+      </div>
+
+      <div class="ai-tip" id="aiSuggestTip">
+        <svg class="ai-tip__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+        <div>
+          <div class="ai-tip__title">AI nápověda</div>
+          <div class="ai-tip__desc">Popište téma vašeho dotazu a my vám navrhneme správný úřad.</div>
+          <div style="margin-top: 8px;">
+            <div class="form-field" style="margin-bottom: 8px;">
+              <textarea id="aiTopicInput" placeholder="Např. Chci vědět, kolik stála oprava silnice v naší obci..." style="height: 80px;"></textarea>
+            </div>
+            <button class="ai-btn" id="suggestAuthorityBtn">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              Navrhnout úřad
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-feedback" id="suggestFeedback">
+        <svg class="ai-feedback__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <div>
+          <div class="ai-feedback__title" id="suggestFeedbackTitle"></div>
+          <div class="ai-feedback__desc" id="suggestFeedbackDesc"></div>
+        </div>
+      </div>
+
+      <div class="form-fields">
+        <div class="form-field">
+          <label for="authorityAddress">Adresa povinného subjektu</label>
+          <input type="text" id="authorityAddress" name="authorityAddress" placeholder="Ulice, PSČ, Město" />
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn--secondary" data-prev>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Zpět
+        </button>
+        <button class="btn btn--primary" data-next>
+          Pokračovat
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 4: Co chcete vědět -->
+    <section class="step" id="step-4">
+      <h1 class="step__title">Co chcete vědět?</h1>
+      <p class="step__subtitle">
+        Popište co nejkonkrétněji, jaké informace požadujete. Čím přesněji, tím lépe.
+      </p>
+
+      <div class="form-fields">
+        <div class="form-field" data-validate="required">
+          <label for="requestText">Popis požadovaných informací</label>
+          <textarea id="requestText" name="requestText" placeholder="Např. Žádám o poskytnutí informace o celkových nákladech na rekonstrukci budovy obecního úřadu v roce 2024, včetně rozpisu jednotlivých položek." required></textarea>
+          <span class="form-field__error">Popište, jaké informace požadujete</span>
+        </div>
+      </div>
+
+      <div class="ai-actions">
+        <button class="ai-btn" id="checkRelevanceBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          Zkontrolovat relevanci
+        </button>
+        <button class="ai-btn" id="improveWordingBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8 19 13"/><path d="M15 9h0"/><path d="M17.8 6.2 19 5"/><path d="m3 21 9-9"/><path d="M12.2 6.2 11 5"/></svg>
+          Vylepšit formulaci
+        </button>
+      </div>
+
+      <div class="ai-feedback" id="relevanceFeedback">
+        <svg class="ai-feedback__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <div>
+          <div class="ai-feedback__title" id="relevanceFeedbackTitle"></div>
+          <div class="ai-feedback__desc" id="relevanceFeedbackDesc"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn--secondary" data-prev>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Zpět
+        </button>
+        <button class="btn btn--primary" data-next>
+          Pokračovat
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 5: Náhled a stažení -->
+    <section class="step" id="step-5">
+      <h1 class="step__title">Vaše žádost je připravena</h1>
+      <p class="step__subtitle">
+        Zkontrolujte náhled a stáhněte žádost jako text nebo PDF.
+      </p>
+
+      <div class="preview-card">
+        <div class="preview-card__header">Náhled žádosti</div>
+        <hr />
+        <div class="preview-card__body" id="previewBody"></div>
+        <hr />
+        <div class="preview-card__date" id="previewDate"></div>
+      </div>
+
+      <div class="download-btns">
+        <button class="btn btn--secondary" id="copyTextBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Kopírovat text
+        </button>
+        <button class="btn btn--primary" id="downloadPdfBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Stáhnout PDF
+        </button>
+      </div>
+
+      <div class="draft-actions">
+        <button class="draft-btn" id="saveDraftBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Uložit koncept
+        </button>
+        <button class="draft-btn" id="clearDraftBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Smazat koncept
+        </button>
+      </div>
+
+      <div class="btn-row" style="justify-content: flex-start;">
+        <button class="btn btn--secondary" data-prev>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Zpět k úpravám
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Draft status toast -->
+  <div class="draft-status" id="draftStatus"></div>
+
+  <script src="../scripts/wizard.ts"></script>
+  <script src="../scripts/ai-assist.ts"></script>
+  <script src="../scripts/pdf-generator.ts"></script>
+  <script src="../scripts/authorities.ts"></script>
+  <script src="../scripts/draft.ts"></script>
+</Layout>
