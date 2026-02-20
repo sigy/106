@@ -699,8 +699,8 @@ body {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: var(--text-primary);
-  color: #fff;
+  background: #1a1a1a;
+  color: #ffffff;
   font-size: 13px;
   font-weight: 500;
   padding: 8px 20px;
@@ -709,6 +709,11 @@ body {
   transition: opacity 0.3s, transform 0.3s;
   pointer-events: none;
   z-index: 100;
+}
+
+[data-theme="dark"] .draft-status {
+  background: #e8e8e8;
+  color: #1a1a1a;
 }
 
 .draft-status.visible {
